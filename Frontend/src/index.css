@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: theme('fontFamily.sans');
+  }
+}
+
+a.active hr{
+    display: block;
+}
+
+/* Hero responsive background control */
+.hero-section{
+  background-repeat: no-repeat, no-repeat;
+  /* Mobile-first: fill and keep subject slightly to the right for text space */
+  background-size: cover, cover;
+  background-position: 75% center, center;
+}
+@media (min-width: 640px){
+  /* sm and up: fill width nicely while keeping subject on right */
+  .hero-section{
+    background-size: cover, cover;
+    background-position: 85% center, center;
+  }
+}
+@media (min-width: 1024px){
+  /* lg and up: push subject further right */
+  .hero-section{
+    background-position: 95% center, center;
+  }
+}
+
+/* Responsive utilities */
+@layer utilities {
+  /* Text truncation for multiple lines */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Ensure consistent spacing on mobile */
+  .mobile-safe-area {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Responsive grid improvements */
+  .responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .responsive-grid {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+  }
+
+  /* Better touch targets for mobile */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Improved form inputs for mobile */
+  .form-input {
+    -webkit-appearance: none;
+    appearance: none;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Better modal positioning on mobile */
+  .modal-mobile {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+
+  @media (max-width: 640px) {
+    .modal-mobile {
+      margin: 0.5rem;
+      max-height: calc(100vh - 1rem);
+    }
+  }
+}
