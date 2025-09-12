@@ -409,11 +409,11 @@ const searchProducts = async (req, res) => {
             filter.$text = { $search: q.trim() };
         }
         
-        // Category filters
+        // Category filters - use exact match to avoid "Men" matching "Women"
         if (category) {
             const categories = category.split(',').map(c => c.trim()).filter(c => c);
             if (categories.length === 1) {
-                filter.category = new RegExp(categories[0], 'i');
+                filter.category = categories[0]; // Exact match instead of regex
             } else if (categories.length > 1) {
                 filter.category = { $in: categories };
             }
@@ -421,7 +421,7 @@ const searchProducts = async (req, res) => {
         if (subCategory) {
             const subCategories = subCategory.split(',').map(sc => sc.trim()).filter(sc => sc);
             if (subCategories.length === 1) {
-                filter.subCategory = new RegExp(subCategories[0], 'i');
+                filter.subCategory = subCategories[0]; // Exact match instead of regex
             } else if (subCategories.length > 1) {
                 filter.subCategory = { $in: subCategories };
             }
