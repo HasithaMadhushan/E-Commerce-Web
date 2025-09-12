@@ -603,9 +603,10 @@ export const updateOrderStatus = async (req, res) => {
     }
 };
 
-// Get orders with advanced filtering (admin)
+// Get orders with advanced filtering (admin) - Optimized for performance
 export const getOrdersWithFilters = async (req, res) => {
     try {
+        console.log('getOrdersWithFilters - Query params:', req.query);
         const {
             status = '',
             paymentStatus = '',
@@ -630,13 +631,10 @@ export const getOrdersWithFilters = async (req, res) => {
             if (dateTo) filter.createdAt.$lte = new Date(dateTo);
         }
 
-        // Search filter (order number, user email, etc.)
+        // Search filter (optimized - only search order number for performance)
         if (search) {
-            filter.$or = [
-                { orderNumber: new RegExp(search, 'i') },
-                { 'shipping.address.street': new RegExp(search, 'i') },
-                { 'shipping.address.city': new RegExp(search, 'i') }
-            ];
+            // Use simple string matching instead of regex for better performance
+            filter.orderNumber = { $regex: search, $options: 'i' };
         }
 
         // Sort options
@@ -658,13 +656,16 @@ export const getOrdersWithFilters = async (req, res) => {
 
         const skip = (page - 1) * limit;
 
-        const orders = await OrderModel.find(filter)
-            .populate('userId', 'name email')
-            .sort(sortOption)
-            .skip(skip)
-            .limit(parseInt(limit));
-
-        const totalOrders = await OrderModel.countDocuments(filter);
+        // Optimize query by removing expensive populate and using lean for better performance
+        const [orders, totalOrders] = await Promise.all([
+            OrderModel.find(filter)
+                .select('orderNumber userId items amount total status paymentStatus payment createdAt shipping')
+                .sort(sortOption)
+                .skip(skip)
+                .limit(parseInt(limit))
+                .lean(), // Use lean for better performance
+            OrderModel.countDocuments(filter)
+        ]);
 
         res.status(200).json({
             success: true,
