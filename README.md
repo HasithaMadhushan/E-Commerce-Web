@@ -288,7 +288,6 @@ If you have any questions or need help with setup, please open an issue in the G
 - [ ] Multi-vendor marketplace support
 - [ ] International shipping options
 - [ ] Advanced SEO optimizations
-- [ ] Social media integrations
 
 ---
 
