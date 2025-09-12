@@ -1,7 +1,7 @@
-import Order from '../models/orderModel.js'
-import Product from '../models/productModel.js'
-import User from '../models/userModel.js'
-import Review from '../models/reviewModel.js'
+import OrderModel from '../models/orderModel.js'
+import ProductModel from '../models/productModel.js'
+import UserModel from '../models/userModel.js'
+import ReviewModel from '../models/reviewModel.js'
 
 // Get dashboard overview stats
 const getDashboardStats = async (req, res) => {
@@ -12,18 +12,18 @@ const getDashboardStats = async (req, res) => {
     startDate.setDate(startDate.getDate() - days)
 
     // Total orders and revenue
-    const totalOrders = await Order.countDocuments()
-    const totalRevenue = await Order.aggregate([
+    const totalOrders = await OrderModel.countDocuments()
+    const totalRevenue = await OrderModel.aggregate([
       { $match: { paymentStatus: 'paid' } },
       { $group: { _id: null, total: { $sum: '$total' } } }
     ])
 
     // Period stats
-    const periodOrders = await Order.countDocuments({
+    const periodOrders = await OrderModel.countDocuments({
       createdAt: { $gte: startDate }
     })
 
-    const periodRevenue = await Order.aggregate([
+    const periodRevenue = await OrderModel.aggregate([
       {
         $match: {
           paymentStatus: 'paid',
@@ -34,19 +34,19 @@ const getDashboardStats = async (req, res) => {
     ])
 
     // Customer stats
-    const totalCustomers = await User.countDocuments()
-    const newCustomers = await User.countDocuments({
+    const totalCustomers = await UserModel.countDocuments()
+    const newCustomers = await UserModel.countDocuments({
       createdAt: { $gte: startDate }
     })
 
     // Product stats
-    const totalProducts = await Product.countDocuments()
-    const lowStockProducts = await Product.countDocuments({
+    const totalProducts = await ProductModel.countDocuments()
+    const lowStockProducts = await ProductModel.countDocuments({
       'inventory.available': { $lte: 10 }
     })
 
     // Average order value
-    const avgOrderValue = await Order.aggregate([
+    const avgOrderValue = await OrderModel.aggregate([
       { $match: { paymentStatus: 'paid' } },
       { $group: { _id: null, avg: { $avg: '$total' } } }
     ])
@@ -100,7 +100,7 @@ const getSalesAnalytics = async (req, res) => {
         groupFormat = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }
     }
 
-    const salesData = await Order.aggregate([
+    const salesData = await OrderModel.aggregate([
       {
         $match: {
           createdAt: { $gte: startDate },
@@ -119,7 +119,7 @@ const getSalesAnalytics = async (req, res) => {
     ])
 
     // Order status distribution
-    const statusDistribution = await Order.aggregate([
+    const statusDistribution = await OrderModel.aggregate([
       {
         $match: {
           createdAt: { $gte: startDate }
@@ -134,7 +134,7 @@ const getSalesAnalytics = async (req, res) => {
     ])
 
     // Payment method distribution
-    const paymentMethods = await Order.aggregate([
+    const paymentMethods = await OrderModel.aggregate([
       {
         $match: {
           createdAt: { $gte: startDate },
@@ -177,7 +177,7 @@ const getProductAnalytics = async (req, res) => {
     startDate.setDate(startDate.getDate() - days)
 
     // Top selling products
-    const topProducts = await Order.aggregate([
+    const topProducts = await OrderModel.aggregate([
       {
         $match: {
           createdAt: { $gte: startDate },
@@ -198,7 +198,7 @@ const getProductAnalytics = async (req, res) => {
     ])
 
     // Category performance
-    const categoryPerformance = await Order.aggregate([
+    const categoryPerformance = await OrderModel.aggregate([
       {
         $match: {
           createdAt: { $gte: startDate },
@@ -226,12 +226,12 @@ const getProductAnalytics = async (req, res) => {
     ])
 
     // Low stock products
-    const lowStockProducts = await Product.find({
+    const lowStockProducts = await ProductModel.find({
       'inventory.available': { $lte: 10 }
     }).select('name inventory category price').limit(limitNum)
 
     // Product reviews summary
-    const reviewStats = await Review.aggregate([
+    const reviewStats = await ReviewModel.aggregate([
       {
         $group: {
           _id: null,
@@ -271,7 +271,7 @@ const getCustomerAnalytics = async (req, res) => {
     startDate.setDate(startDate.getDate() - days)
 
     // Customer acquisition
-    const customerAcquisition = await User.aggregate([
+    const customerAcquisition = await UserModel.aggregate([
       {
         $match: {
           createdAt: { $gte: startDate }
@@ -287,7 +287,7 @@ const getCustomerAnalytics = async (req, res) => {
     ])
 
     // Top customers by orders
-    const topCustomers = await Order.aggregate([
+    const topCustomers = await OrderModel.aggregate([
       {
         $match: {
           paymentStatus: 'paid'
@@ -307,7 +307,7 @@ const getCustomerAnalytics = async (req, res) => {
     ])
 
     // Customer lifetime value distribution
-    const clvDistribution = await Order.aggregate([
+    const clvDistribution = await OrderModel.aggregate([
       {
         $match: {
           paymentStatus: 'paid'
