@@ -30,6 +30,8 @@ export const corsOptions = {
       'http://localhost:5173',
       'http://localhost:5174',
       'http://localhost:5175',
+      'https://e-commerce-web-frontend-six.vercel.app',
+      'https://adminpanel-seven-pied.vercel.app',
       process.env.FRONTEND_URL,
       process.env.ADMIN_URL
     ].filter(Boolean)
