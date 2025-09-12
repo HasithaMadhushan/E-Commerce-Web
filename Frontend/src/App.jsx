@@ -17,7 +17,7 @@ import SearchBar from "./components/SearchBar"
 import Footer from "./components/Footer"
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./styles/notifications.css";
+
 
 
 const App = () => {
