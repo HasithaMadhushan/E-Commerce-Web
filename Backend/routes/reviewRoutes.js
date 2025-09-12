@@ -31,6 +31,7 @@ reviewRouter.put('/:reviewId', authUser, updateReview);
 reviewRouter.delete('/:reviewId', authUser, deleteReview);
 
 // Admin routes
+reviewRouter.get('/list', adminAuth, getAllReviews); // Add this route for admin panel
 reviewRouter.get('/admin/list', adminAuth, getAllReviews);
 reviewRouter.put('/admin/:reviewId/status', adminAuth, updateReviewStatus);
 reviewRouter.post('/:reviewId/reply', adminAuth, replyToReview);

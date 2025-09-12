@@ -20,7 +20,8 @@ import { validateOrderPlacement } from '../middleware/validation.js';
 const orderRouter = express.Router();
 
 //admin features
-orderRouter.post('/list',adminAuth,allOrders);
+orderRouter.get('/list',adminAuth, getOrdersWithFilters); // Change POST to GET and use modern function
+orderRouter.post('/list',adminAuth,allOrders); // Keep old route for compatibility
 orderRouter.get('/admin/list',adminAuth, getOrdersWithFilters);
 orderRouter.get('/admin/analytics',adminAuth, getOrderAnalytics);
 orderRouter.put('/status',adminAuth, updateStatus);
