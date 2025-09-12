@@ -309,10 +309,22 @@ const placeOrderStripe = async (req, res) => {
 }
 //Verify Stripe
 const verifyStripe = async (req, res) => {
-    const { orderId, success, userId } = req.body;
-    console.log('Verifying Stripe payment:', { orderId, success, userId });
-    
     try {
+        console.log('VerifyStripe - Full request body:', req.body);
+        console.log('VerifyStripe - Auth userId from middleware:', req.body.userId);
+        
+        const { orderId, success, userId } = req.body;
+        console.log('Verifying Stripe payment:', { orderId, success, userId });
+        
+        if (!orderId) {
+            console.log('ERROR: Missing orderId in request');
+            return res.status(400).json({ success: false, message: 'Order ID is required' });
+        }
+        
+        if (!userId) {
+            console.log('ERROR: Missing userId in request');
+            return res.status(400).json({ success: false, message: 'User ID is required' });
+        }
         if (success === "true") {
             const order = await OrderModel.findById(orderId)
             if (!order) {
@@ -382,8 +394,10 @@ const verifyStripe = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: error.message });
+        console.error('VerifyStripe ERROR:', error);
+        console.error('VerifyStripe ERROR Stack:', error.stack);
+        console.error('VerifyStripe Request Body:', req.body);
+        res.status(500).json({ success: false, message: error.message, details: process.env.NODE_ENV === 'development' ? error.stack : 'Internal server error' });
     }
 
 };
