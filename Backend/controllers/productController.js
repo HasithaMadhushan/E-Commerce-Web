@@ -1,6 +1,7 @@
 import ProductModel from '../models/productModel.js';
 import {v2 as cloudinary } from "cloudinary";
 import { json } from 'express';
+import mongoose from 'mongoose';
 import { invalidateProductCache } from '../middleware/cache.js';
 
 
@@ -66,13 +67,23 @@ const addProduct = async (req, res) => {
 //function to get total product list
 const listProducts = async (req, res) => {
     try {
+        console.log('listProducts: Starting to fetch products...')
+        console.log('listProducts: DB connection state:', mongoose.connection.readyState)
+        
         const products = await ProductModel.find({});
+        console.log('listProducts: Found', products.length, 'products')
 
         res.status(200).json({success: true, products})
         
     } catch (error) {
-        console.log(error);
-        res.status(500).json({success: false, message:error.message})
+        console.error('listProducts ERROR:', error);
+        console.error('listProducts ERROR Stack:', error.stack);
+        console.error('listProducts DB State:', mongoose.connection.readyState);
+        res.status(500).json({
+            success: false, 
+            message: error.message,
+            details: process.env.NODE_ENV === 'development' ? error.stack : 'Internal server error'
+        })
     }
 }
 
