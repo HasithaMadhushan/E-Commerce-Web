@@ -384,6 +384,7 @@ const searchProducts = async (req, res) => {
             q = '', // Search query
             category = '',
             subCategory = '',
+            sizes = '', // Add sizes parameter
             minPrice = 0,
             maxPrice = 999999,
             minRating = 0,
@@ -410,10 +411,28 @@ const searchProducts = async (req, res) => {
         
         // Category filters
         if (category) {
-            filter.category = new RegExp(category, 'i');
+            const categories = category.split(',').map(c => c.trim()).filter(c => c);
+            if (categories.length === 1) {
+                filter.category = new RegExp(categories[0], 'i');
+            } else if (categories.length > 1) {
+                filter.category = { $in: categories };
+            }
         }
         if (subCategory) {
-            filter.subCategory = new RegExp(subCategory, 'i');
+            const subCategories = subCategory.split(',').map(sc => sc.trim()).filter(sc => sc);
+            if (subCategories.length === 1) {
+                filter.subCategory = new RegExp(subCategories[0], 'i');
+            } else if (subCategories.length > 1) {
+                filter.subCategory = { $in: subCategories };
+            }
+        }
+        
+        // Size filter
+        if (sizes) {
+            const sizeArray = sizes.split(',').map(s => s.trim()).filter(s => s);
+            if (sizeArray.length > 0) {
+                filter.sizes = { $in: sizeArray };
+            }
         }
         
         // Price range filter

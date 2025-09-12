@@ -64,6 +64,7 @@ const collection = () => {
       if (search.trim()) params.append('q', search.trim())
       if (selectedCategories.length > 0) params.append('category', selectedCategories.join(','))
       if (selectedSubCategories.length > 0) params.append('subCategory', selectedSubCategories.join(','))
+      if (selectedSizes.length > 0) params.append('sizes', selectedSizes.join(','))
       if (minPrice) params.append('minPrice', minPrice)
       if (maxPrice) params.append('maxPrice', maxPrice)
       if (minRating) params.append('minRating', minRating)
