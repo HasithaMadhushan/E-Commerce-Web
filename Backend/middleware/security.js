@@ -31,9 +31,14 @@ export const corsOptions = {
       'http://localhost:5174',
       'http://localhost:5175',
       // Current deployment URLs
+      'https://e-commerce-web-frontendd.vercel.app',
+      'https://e-commerce-web-adminn.vercel.app',
+      'https://e-commerce-web-backenddd.vercel.app',
+      // Previous deployment URLs (keeping for safety)
+      'https://e-commerce-web-frontend-ten.vercel.app',
+      'https://e-commerce-web-admin.vercel.app',
       'https://e-commerce-web-frontend-delta.vercel.app',
       'https://e-commerce-web-coral-two.vercel.app',
-      // Previous deployment URLs (keeping for safety)
       'https://e-commerce-web-frontend-six.vercel.app',
       'https://adminpanel-seven-pied.vercel.app',
       process.env.FRONTEND_URL,
